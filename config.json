@@ -1,0 +1,1 @@
+{\n  "themes": {\n    "default": "light",\n    "available": [\n      "light",\n      "dark"\n    ]\n  },\n  "customization": {\n    "showHeader": true,\n    "showFooter": true,\n    "colorScheme": "blue"\n  }\n}
