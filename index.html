@@ -5,28 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valentine's Day Calendar</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
-        .day { border: 1px solid #d1d1d1; padding: 10px; text-align: center; border-radius: 5px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fef3f3;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 20px;
+            position: relative;
+        }
+        .day {
+            border: 2px solid pink;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .day:hover {
+            background-color: rgba(255, 182, 193, 0.5);
+        }
+        .controls, .details {
+            margin: 20px;
+        }
+        .theme-buttons { 
+            margin: 10px;
+        }
+        .theme-button {
+            margin: 0 5px;
+        }
     </style>
+    <script>
+        let selectedDay = null;
+        let theme = 'Love';
+        const themes = {
+            Love: { bg: '#ffcccc', color: '#ff0066' },
+            Romantic: { bg: '#ffe6e6', color: '#ff6699' },
+            Fun: { bg: '#ffffcc', color: '#ffcc00' },
+            Elegant: { bg: '#e6ccff', color: '#9933ff' }
+        };
+
+        function setTheme(newTheme) {
+            theme = newTheme;
+            document.body.style.backgroundColor = themes[theme].bg;
+            document.body.style.color = themes[theme].color;
+        }
+
+        function saveData(day, emoji, name, message, musicUrl) {
+            const data = { emoji, name, message, musicUrl };
+            localStorage.setItem(`day-${day}`, JSON.stringify(data));
+            alert('Data saved for day ' + day);
+        }
+
+        function loadDay(day) {
+            const data = JSON.parse(localStorage.getItem(`day-${day}`));
+            if (data) {
+                document.getElementById('emoji').value = data.emoji;
+                document.getElementById('name').value = data.name;
+                document.getElementById('message').value = data.message;
+                document.getElementById('musicUrl').value = data.musicUrl;
+                document.getElementById('musicPlayer').src = data.musicUrl;
+            }
+        }
+
+        function playMusic() {
+            document.getElementById('musicPlayer').play();
+        }
+
+        function createCalendar() {
+            const calendar = document.querySelector('.calendar');
+            for (let i = 1; i <= 28; i++) {
+                const day = document.createElement('div');
+                day.classList.add('day');
+                day.innerText = i;
+                day.onclick = () => { loadDay(i); selectedDay = i; };
+                calendar.appendChild(day);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTheme(theme);
+            createCalendar();
+        });
+    </script>
 </head>
 <body>
-    <h1>Valentine's Day Countdown Calendar</h1>
-    <div class="calendar">
-        <div class="day"><strong>Feb 1</strong><br>Activity: Share your favorite love story<br>Music: <a href='#'>First Love Playlist</a></div>
-        <div class="day"><strong>Feb 2</strong><br>Activity: Bake cookies for your loved one<br>Music: <a href='#'>Romantic Classics</a></div>
-        <div class="day"><strong>Feb 3</strong><br>Activity: Write a love letter<br>Music: <a href='#'>Love Songs</a></div>
-        <div class="day"><strong>Feb 4</strong><br>Activity: Movie night with romantic films<br>Music: <a href='#'>Chill Vibes</a></div>
-        <div class="day"><strong>Feb 5</strong><br>Activity: Plan a surprise date<br>Music: <a href='#'>Heartfelt Melodies</a></div>
-        <div class="day"><strong>Feb 6</strong><br>Activity: Create a scrapbook of memories<br>Music: <a href='#'>Dance of Love</a></div>
-        <div class="day"><strong>Feb 7</strong><br>Activity: Go for a romantic walk<br>Music: <a href='#'>Indie Love Songs</a></div>
-        <div class="day"><strong>Feb 8</strong><br>Activity: Exchange small gifts<br>Music: <a href='#'>Pop Love Anthems</a></div>
-        <div class="day"><strong>Feb 9</strong><br>Activity: Have a candle-lit dinner<br>Music: <a href='#'>Acoustic Love</a></div>
-        <div class="day"><strong>Feb 10</strong><br>Activity: Dance together in your living room<br>Music: <a href='#'>R&B Romance</a></div>
-        <div class="day"><strong>Feb 11</strong><br>Activity: Stargaze together<br>Music: <a href='#'>Smooth Jazz</a></div>
-        <div class="day"><strong>Feb 12</strong><br>Activity: Make a scrapbook of your relationship<br>Music: <a href='#'>Classic Love Songs</a></div>
-        <div class="day"><strong>Feb 13</strong><br>Activity: Visit a local love-themed exhibit<br>Music: <a href='#'>Upbeat Love</a></div>
-        <div class="day"><strong>Feb 14</strong><br>Activity: Celebrate Valentine's Day!<br>Music: <a href='#'>Valentine's Day Special Playlist</a></div>
+    <h1>Valentine's Day Calendar</h1>
+    <div class="calendar"></div>
+    <div class="controls">
+        <input id="emoji" placeholder="Emoji"/>
+        <input id="name" placeholder="Name"/>
+        <input id="message" placeholder="Message"/>
+        <input id="musicUrl" placeholder="Music URL"/>
+        <button onclick="selectedDay && saveData(selectedDay, emoji.value, name.value, message.value, musicUrl.value)">Save Data</button>
     </div>
+    <div class="controls theme-buttons">
+        <button class="theme-button" onclick="setTheme('Love')">Love</button>
+        <button class="theme-button" onclick="setTheme('Romantic')">Romantic</button>
+        <button class="theme-button" onclick="setTheme('Fun')">Fun</button>
+        <button class="theme-button" onclick="setTheme('Elegant')">Elegant</button>
+    </div>
+    <div class="details">
+        <audio id="musicPlayer" controls></audio>
+    </div>
+    <script>
+        setTheme(theme);
+    </script>
 </body>
 </html>
